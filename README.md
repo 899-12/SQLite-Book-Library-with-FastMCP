@@ -50,7 +50,7 @@ Think of MCP like a **USB-C port for LLMs**: it standardizes the way models call
 ```python
 from mcp.server.fastmcp import FastMCP
 mcp = FastMCP('sqlite-book-library')  # Register your toolset
-
+```
 To start the server:
 ```
 uv run server.py --server_type=sse
