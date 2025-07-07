@@ -6,7 +6,7 @@ This project implements a simple **Book Library backend** using:
 - 🗄️ **SQLite**: to store book data  
 - ⚙️ **Uvicorn**: to serve the tools over an HTTP SSE interface
 
-It enables Language Models (LLMs) to interact with your database through structured tool calls — perfect for Retrieval-Augmented Generation (RAG), autonomous agents, or LLM-based assistants.
+It allows Language Models (LLMs) to interact with your local database through tool calls — ideal for Retrieval-Augmented Generation (RAG), autonomous agents, or database assistants.
 
 ---
 
@@ -14,44 +14,43 @@ It enables Language Models (LLMs) to interact with your database through structu
 
 - 📖 Add new books using SQL
 - 🔍 Query books with custom `SELECT` queries
-- 🧠 Designed to work with LLM agents (e.g., via LlamaIndex)
-- 🧰 Easily extendable: add tools to delete or update entries
+- 🧠 Designed to integrate with LLM agents (e.g., via LlamaIndex)
+- 🧰 Easily extendable: add `update_book()` or `delete_book()` as needed
 
 ---
 
 ## 🔧 Tech Stack
 
-| Component  | Description |
-|------------|-------------|
-| `FastMCP`  | Exposes Python functions as tools over HTTP |
-| `SQLite`   | Local file-based database (`library.db`) |
-| `Uvicorn`  | Lightweight ASGI server |
-| `LlamaIndex` | For building LLM agent clients |
+| Component     | Description                                       |
+|---------------|---------------------------------------------------|
+| `FastMCP`     | Lightweight implementation of the MCP standard    |
+| `SQLite`      | File-based local database (`library.db`)          |
+| `Uvicorn`     | ASGI server to host the tool interface            |
+| `LlamaIndex`  | Agent framework to interact with MCP tool servers |
 
 ---
 
 ## ⚙️ What is MCP?
-MCP (Machine Callable Protocol) is a protocol that enables exposing Python functions as tools that language models (LLMs) can call seamlessly.
 
-With FastMCP, you can:
+**MCP (Model Context Protocol)** is an open standard designed to help applications connect large language models (LLMs) to external tools and data.  
+Think of MCP like a **USB-C port for LLMs**: it standardizes the way models call functions and access data sources.
 
-✅ Define tools using @mcp.tool() decorators
+### Why use MCP?
 
-✅ Serve them over HTTP (--server_type=sse)
+- 🔌 **Tool interoperability** – Easily expose Python functions as callable APIs
+- 🧠 **Plug-and-play LLM agents** – LLMs can auto-discover and use tools
+- 🔐 **Vendor-agnostic** – Use with OpenAI, Anthropic, Hugging Face, or local models
+- 🏗️ **Workflow-friendly** – Ideal for building modular AI agents and pipelines
 
-✅ Let AI agents discover and call them by name
+---
 
-Think of it like: "Turn your Python functions into AI-callable APIs."
+## 🛠️ Local MCP Setup
 
-
-## 🔌 Local MCP Setup Flow
-server.py — The Backend Server
-```
+### `server.py` – Your tool server
+```python
 from mcp.server.fastmcp import FastMCP
+mcp = FastMCP('sqlite-book-library')  # Register your toolset
 
-mcp = FastMCP('sqlite-book-library')  # Register the toolset
-
-```
 To start the server:
 ```
 uv run server.py --server_type=sse
